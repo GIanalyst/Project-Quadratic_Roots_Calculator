@@ -1,0 +1,45 @@
+-- calculate_quadratic_roots --
+
+create or replace function quadratic_roots(a number, b number, c number)
+return varchar2 is
+v_discriminant number;
+v_x1 number;
+v_x2 number;
+v_x1_x2 number;
+result_text varchar2(1000);
+begin
+
+if a = 0 then
+return 'This is not a quadratic equation, but a linear equation.';
+else
+v_discriminant := power(b, 2) - 4 * a * c;
+
+if v_discriminant > 0 then
+v_x1 := round((-b + sqrt(v_discriminant)) / (2 * a), 2);
+v_x2 := round((-b - sqrt(v_discriminant)) / (2 * a), 2);
+result_text := 'There are two distinct real roots:' || ' x1 = ' || to_char(v_x1) ||'; x2 = ' || to_char(v_x2);
+elsif v_discriminant = 0 then
+v_x1_x2 := round(-b / (2 * a), 2);
+result_text := 'There is one real root: x1 = x2 = ' || to_char(v_x1_x2);
+else
+result_text := 'There are two complex roots';
+end if;
+
+if a > 0 then
+result_text := result_text || chr(10) || 'The parabola opens upwards';
+else
+result_text := result_text || chr(10) || 'The parabola opens downwards';
+end if;
+return result_text;
+end if;
+end quadratic_roots;
+/
+
+-- check 
+declare
+result varchar2(1000);
+begin
+result := quadratic_roots(0, -3, 2);
+dbms_output.put_line(result);
+end;
+/
